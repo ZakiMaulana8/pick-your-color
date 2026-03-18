@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaBot - Asisten Pemilihan Warna AI</title>
+    <meta name="description" content="Chatbot AI untuk membantumu menemukan kombinasi warna dan rasio yang sempurna untuk desainmu.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Using Google Fonts: Outfit for a modern, sleek look -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-mesh"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>ChromaBot</h1>
+                    <p>AI Design Assistant</p>
+                </div>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </header>
+
+        <!-- Chat Area -->
+        <main class="chat-container" id="chat-container">
+            <div class="message bot-message intro-message">
+                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="message-content">
+                    <p>Halo! Saya <strong>ChromaBot</strong> 👋</p>
+                    <p>Ceritakan ide desain atau suasana yang ingin Anda ciptakan (misal: "cafe minimalis yang hangat", "aplikasi fintech yang modern", "website teknologi yang futuristik").</p>
+                    <p>Saya akan membuatkan rekomendasi palet warna mulai dari 1-4 warna yang siap pakai, lengkap dengan rasionya!</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="chat-input-area">
+            <form id="chat-form">
+                <input type="text" id="user-input" placeholder="Ketik ide desain Anda di sini..." autocomplete="off" required>
+                <button type="submit" id="send-btn" aria-label="Send">
+                    <i class="fa-regular fa-paper-plane"></i>
+                </button>
+            </form>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

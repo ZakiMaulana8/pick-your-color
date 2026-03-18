@@ -1,0 +1,251 @@
+// DOM Elements
+const chatContainer = document.getElementById('chat-container');
+const chatForm = document.getElementById('chat-form');
+const userInput = document.getElementById('user-input');
+const themeToggle = document.getElementById('theme-toggle');
+
+// Theme Management
+let isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+function applyTheme() {
+    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+    themeToggle.innerHTML = isDarkTheme ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+}
+
+applyTheme();
+
+themeToggle.addEventListener('click', () => {
+    isDarkTheme = !isDarkTheme;
+    applyTheme();
+});
+
+// Toast for copy feedback
+const toast = document.createElement('div');
+toast.className = 'copy-toast';
+document.body.appendChild(toast);
+
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2000);
+}
+
+// AI "Brain" - Color Palettes DB
+const palettesDB = {
+    // 2 Colors
+    duotone: [
+        { colors: ['#0f172a', '#3fbDF3'], ratios: [70, 30], name: 'Neon Cyber Duotone' },
+        { colors: ['#fdf4ff', '#d946ef'], ratios: [80, 20], name: 'Minimal Pink' },
+        { colors: ['#171717', '#eab308'], ratios: [85, 15], name: 'Dark Gold Accent' }
+    ],
+    // 3 Colors
+    minimalist: [
+        { colors: ['#ffffff', '#f1f5f9', '#0f172a'], ratios: [60, 30, 10], name: 'Clean White Minimal' },
+        { colors: ['#fafafa', '#e4e4e7', '#f43f5e'], ratios: [65, 25, 10], name: 'Red Accent Modern' },
+        { colors: ['#1e293b', '#334155', '#38bdf8'], ratios: [60, 30, 10], name: 'Dark UI Soft Blue' }
+    ],
+    // 4 Colors
+    nature: [
+        { colors: ['#f7fee7', '#d9f99d', '#84cc16', '#3f6212'], ratios: [60, 20, 15, 5], name: 'Spring Fresh' },
+        { colors: ['#ecfdf5', '#a7f3d0', '#10b981', '#047857'], ratios: [50, 30, 10, 10], name: 'Mint Forest' },
+        { colors: ['#f0fdfa', '#5eead4', '#0f766e', '#134e4a'], ratios: [60, 25, 10, 5], name: 'Deep Ocean' }
+    ],
+    warm: [
+        { colors: ['#fff7ed', '#ffedd5', '#f97316', '#9a3412'], ratios: [55, 30, 10, 5], name: 'Sunset Coffee' },
+        { colors: ['#fef2f2', '#fecaca', '#ef4444', '#7f1d1d'], ratios: [60, 20, 15, 5], name: 'Rose Warmth' },
+        { colors: ['#fffbeb', '#fef08a', '#eab308', '#854d0e'], ratios: [60, 25, 10, 5], name: 'Golden Hour' }
+    ],
+    tech: [
+        { colors: ['#0b0f19', '#1e293b', '#3b82f6', '#8b5cf6'], ratios: [60, 25, 10, 5], name: 'SaaS Modern Tech' },
+        { colors: ['#ffffff', '#f3f4f6', '#2563eb', '#1e40af'], ratios: [60, 20, 15, 5], name: 'Corporate Trust' },
+        { colors: ['#000000', '#18181b', '#22c55e', '#ec4899'], ratios: [50, 30, 10, 10], name: 'Hacker Punk' }
+    ],
+    pastel: [
+        { colors: ['#fdf4ff', '#fce7f3', '#fbcfe8', '#f472b6'], ratios: [40, 30, 20, 10], name: 'Cotton Candy' },
+        { colors: ['#f0f9ff', '#e0f2fe', '#bae6fd', '#38bdf8'], ratios: [50, 25, 15, 10], name: 'Sky Cloud' }
+    ]
+};
+
+// Logic to find matches
+function getRecommendation(text) {
+    const input = text.toLowerCase();
+    let pool = [];
+
+    if (input.includes('minimal')) pool = pool.concat(palettesDB.minimalist);
+    if (input.includes('alam') || input.includes('hijau') || input.includes('nature') || input.includes('lingkungan')) pool = pool.concat(palettesDB.nature);
+    if (input.includes('tech') || input.includes('teknologi') || input.includes('robot') || input.includes('fintech') || input.includes('aplikasi') || input.includes('cyber')) pool = pool.concat(palettesDB.tech);
+    if (input.includes('hangat') || input.includes('cafe') || input.includes('kopi') || input.includes('sunset') || input.includes('orange')) pool = pool.concat(palettesDB.warm);
+    if (input.includes('pastel') || input.includes('lucu') || input.includes('imut') || input.includes('soft')) pool = pool.concat(palettesDB.pastel);
+    if (input.includes('2') || input.includes('dua') || input.includes('duotone')) pool = pool.concat(palettesDB.duotone);
+
+    // If no context matched, combine some common good ones
+    if (pool.length === 0) {
+        pool = [...palettesDB.tech, ...palettesDB.minimalist, ...palettesDB.warm, ...palettesDB.nature];
+    }
+
+    // Random choice from the pooled list
+    return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// UI Functions
+function scrollToBottom() {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function appendMessage(sender, content, isHtml = false) {
+    const div = document.createElement('div');
+    div.classList.add('message');
+    div.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+
+    const avatarIcon = sender === 'user' 
+        ? '<i class="fa-solid fa-user"></i>' 
+        : '<i class="fa-solid fa-wand-magic-sparkles"></i>';
+
+    const messageContent = isHtml ? content : `<p>${content}</p>`;
+
+    div.innerHTML = `
+        <div class="avatar">${avatarIcon}</div>
+        <div class="message-content">
+            ${messageContent}
+        </div>
+    `;
+
+    chatContainer.appendChild(div);
+    scrollToBottom();
+}
+
+function showTyping() {
+    const div = document.createElement('div');
+    div.classList.add('message', 'bot-message');
+    div.id = 'typing-indicator';
+    div.innerHTML = `
+        <div class="avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="message-content">
+            <div class="typing-indicator">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    `;
+    chatContainer.appendChild(div);
+    scrollToBottom();
+}
+
+function removeTyping() {
+    const indicator = document.getElementById('typing-indicator');
+    if (indicator) indicator.remove();
+}
+
+function attachCopyEventListeners() {
+    const segments = document.querySelectorAll('.palette-segment');
+    segments.forEach(seg => {
+        // Prevent stacking listeners
+        seg.removeEventListener('click', copyHexColor); 
+        seg.addEventListener('click', copyHexColor);
+    });
+
+    const cards = document.querySelectorAll('.color-card');
+    cards.forEach(card => {
+        card.removeEventListener('click', copyHexColorFromCard);
+        card.addEventListener('click', copyHexColorFromCard);
+        card.style.cursor = 'pointer';
+    });
+}
+
+function copyHexColor(e) {
+    const hex = e.target.getAttribute('data-hex');
+    navigator.clipboard.writeText(hex).then(() => {
+        showToast(`Disalin: ${hex}`);
+    });
+}
+
+function copyHexColorFromCard(e) {
+    const hexEl = e.currentTarget.querySelector('.color-hex-text');
+    if(hexEl) {
+        const hex = hexEl.textContent;
+        navigator.clipboard.writeText(hex).then(() => {
+            showToast(`Disalin: ${hex}`);
+        });
+    }
+}
+
+function buildPaletteOutput(palette) {
+    const { colors, ratios, name } = palette;
+    
+    let barsHTML = '';
+    let cardsHTML = '';
+    
+    // Labels for the roles
+    const roles = {
+        0: 'Background',
+        1: 'Primary Element',
+        2: 'Secondary / Accent',
+        3: 'Highlight / Text'
+    };
+
+    colors.forEach((col, idx) => {
+        const r = ratios[idx];
+        barsHTML += `<div class="palette-segment" style="width: ${r}%; background-color: ${col};" data-hex="${col}" data-percent="${r}%"></div>`;
+        
+        cardsHTML += `
+            <div class="color-card" title="Klik untuk menyalin">
+                <div class="color-swatch-circle" style="background-color: ${col};"></div>
+                <div class="color-info-text">
+                    <span class="color-hex-text">${col}</span>
+                    <span class="color-ratio-text">${r}%</span>
+                </div>
+            </div>
+        `;
+    });
+
+    // Formatting rules description
+    let guidelines = `<p class="ratio-guideline">Saran Penggunaan:<br>`;
+    colors.forEach((col, idx) => {
+        guidelines += `<strong>${roles[idx] || 'Accent ' + idx} (${ratios[idx]}%)</strong> menggunakan warna <code>${col}</code>.<br>`;
+    });
+    guidelines += `</p>`;
+
+    return `
+        <div class="palette-display">
+            <h3 class="palette-title"><i class="fa-solid fa-droplet"></i> Tema: "${name}"</h3>
+            <div class="palette-bar-wrapper">
+                ${barsHTML}
+            </div>
+            <div class="color-cards-grid">
+                ${cardsHTML}
+            </div>
+            ${guidelines}
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);"><i class="fa-regular fa-lightbulb"></i> Tips: Anda dapat mengklik warna manapun untuk menyalin kode Hex-nya secara otomatis.</p>
+    `;
+}
+
+// Event Listeners
+chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    // Send User Message
+    appendMessage('user', text);
+    userInput.value = '';
+
+    // Show Typing Indicator
+    showTyping();
+
+    // AI Logic Simulation
+    setTimeout(() => {
+        removeTyping();
+        const recommendation = getRecommendation(text);
+        const responseHtml = `<p>Tentu, ini analisis saya untuk konsep "${text}".</p>` + buildPaletteOutput(recommendation);
+        
+        appendMessage('bot', responseHtml, true);
+        
+        // Attach click listeners to new elements
+        setTimeout(() => attachCopyEventListeners(), 100);
+
+    }, Math.random() * 800 + 1000); // Random delay 1-1.8s
+});
