@@ -153,6 +153,13 @@ function attachCopyEventListeners() {
         card.addEventListener('click', copyHexColorFromCard);
         card.style.cursor = 'pointer';
     });
+
+    // Add event listener for preview buttons
+    const previewBtns = document.querySelectorAll('.btn-preview-palette');
+    previewBtns.forEach(btn => {
+        btn.removeEventListener('click', handlePreviewClick);
+        btn.addEventListener('click', handlePreviewClick);
+    });
 }
 
 function copyHexColor(e) {
@@ -218,6 +225,9 @@ function buildPaletteOutput(palette) {
                 ${cardsHTML}
             </div>
             ${guidelines}
+            <button class="btn-preview-palette" data-colors='${JSON.stringify(colors)}'>
+                <i class="fa-solid fa-desktop"></i> Lihat Preview Web (Landing Page)
+            </button>
         </div>
         <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);"><i class="fa-regular fa-lightbulb"></i> Tips: Anda dapat mengklik warna manapun untuk menyalin kode Hex-nya secara otomatis.</p>
     `;
@@ -248,4 +258,75 @@ chatForm.addEventListener('submit', (e) => {
         setTimeout(() => attachCopyEventListeners(), 100);
 
     }, Math.random() * 800 + 1000); // Random delay 1-1.8s
+});
+
+// Preview logic
+function getContrastYIQ(hexcolor){
+    hexcolor = hexcolor.replace("#", "");
+    var r = parseInt(hexcolor.substr(0,2),16);
+    var g = parseInt(hexcolor.substr(2,2),16);
+    var b = parseInt(hexcolor.substr(4,2),16);
+    var yiq = ((r*299)+(g*587)+(b*114))/1000;
+    return (yiq >= 128) ? '#0f172a' : '#f8fafc';
+}
+
+function shadeColor(color, percent) {
+    var R = parseInt(color.substring(1,3),16);
+    var G = parseInt(color.substring(3,5),16);
+    var B = parseInt(color.substring(5,7),16);
+
+    R = parseInt(Math.max(0, Math.min(255, R * (100 + percent) / 100)));
+    G = parseInt(Math.max(0, Math.min(255, G * (100 + percent) / 100)));
+    B = parseInt(Math.max(0, Math.min(255, B * (100 + percent) / 100)));
+
+    var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+    var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+    var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+    return "#"+RR+GG+BB;
+}
+
+function handlePreviewClick(e) {
+    const colorsStr = e.currentTarget.getAttribute('data-colors');
+    const colors = JSON.parse(colorsStr);
+    showPreview(colors);
+}
+
+function showPreview(colors) {
+    const modal = document.getElementById('preview-modal');
+    const frame = document.getElementById('preview-frame');
+    
+    let bg = colors[0];
+    let primary = colors[1];
+    let secondary = colors.length > 2 ? colors[2] : primary;
+    let text = colors.length > 3 ? colors[3] : getContrastYIQ(bg);
+    
+    if(colors.length === 4 && text.toLowerCase() === bg.toLowerCase()) {
+        text = getContrastYIQ(bg);
+    }
+    
+    let isLightBg = (getContrastYIQ(bg) === '#0f172a');
+    let cardBg = isLightBg ? shadeColor(bg, -3) : shadeColor(bg, 10);
+    
+    frame.style.setProperty('--prev-bg', bg);
+    frame.style.setProperty('--prev-primary', primary);
+    frame.style.setProperty('--prev-secondary', secondary);
+    frame.style.setProperty('--prev-text', text);
+    frame.style.setProperty('--prev-card', cardBg);
+    frame.style.setProperty('--prev-btn-text', getContrastYIQ(primary));
+    
+    const closeBtn = document.getElementById('close-preview-btn');
+    if (closeBtn) closeBtn.style.color = getContrastYIQ(bg);
+
+    modal.classList.add('active');
+}
+
+document.getElementById('close-preview-btn')?.addEventListener('click', () => {
+    document.getElementById('preview-modal').classList.remove('active');
+});
+
+document.getElementById('preview-modal')?.addEventListener('click', (e) => {
+    if(e.target === document.getElementById('preview-modal')) {
+        document.getElementById('preview-modal').classList.remove('active');
+    }
 });
