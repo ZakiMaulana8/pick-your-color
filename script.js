@@ -69,7 +69,7 @@ const palettesDB = {
 };
 
 // Logic to find matches
-function getRecommendation(text) {
+function getRecommendations(text) {
     const input = text.toLowerCase();
     let pool = [];
 
@@ -82,11 +82,23 @@ function getRecommendation(text) {
 
     // If no context matched, combine some common good ones
     if (pool.length === 0) {
-        pool = [...palettesDB.tech, ...palettesDB.minimalist, ...palettesDB.warm, ...palettesDB.nature];
+        pool = [...palettesDB.tech, ...palettesDB.minimalist, ...palettesDB.warm, ...palettesDB.nature, ...palettesDB.pastel, ...palettesDB.duotone];
     }
 
-    // Random choice from the pooled list
-    return pool[Math.floor(Math.random() * pool.length)];
+    // Remove duplicates based on name
+    const uniquePool = [];
+    const names = new Set();
+    const shuffled = pool.sort(() => 0.5 - Math.random());
+    
+    for (const item of shuffled) {
+        if (!names.has(item.name)) {
+            names.add(item.name);
+            uniquePool.push(item);
+            if (uniquePool.length === 3) break;
+        }
+    }
+
+    return uniquePool;
 }
 
 // UI Functions
@@ -229,7 +241,6 @@ function buildPaletteOutput(palette) {
                 <i class="fa-solid fa-desktop"></i> Lihat Preview Web (Landing Page)
             </button>
         </div>
-        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);"><i class="fa-regular fa-lightbulb"></i> Tips: Anda dapat mengklik warna manapun untuk menyalin kode Hex-nya secara otomatis.</p>
     `;
 }
 
@@ -249,8 +260,17 @@ chatForm.addEventListener('submit', (e) => {
     // AI Logic Simulation
     setTimeout(() => {
         removeTyping();
-        const recommendation = getRecommendation(text);
-        const responseHtml = `<p>Tentu, ini analisis saya untuk konsep "${text}".</p>` + buildPaletteOutput(recommendation);
+        const recommendations = getRecommendations(text);
+        
+        let palettesHtml = '<div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">';
+        recommendations.forEach(rec => {
+            palettesHtml += buildPaletteOutput(rec);
+        });
+        palettesHtml += '</div>';
+        
+        const responseHtml = `<p>Tentu, ini 3 saran rekomendasi palet warna untuk konsep "${text}":</p>` + 
+                             palettesHtml + 
+                             `<p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);"><i class="fa-regular fa-lightbulb"></i> Tips: Anda dapat mengklik warna manapun untuk menyalin kode Hex-nya secara otomatis.</p>`;
         
         appendMessage('bot', responseHtml, true);
         
