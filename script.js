@@ -172,6 +172,18 @@ function attachCopyEventListeners() {
         btn.removeEventListener('click', handlePreviewClick);
         btn.addEventListener('click', handlePreviewClick);
     });
+
+    const copyCssBtns = document.querySelectorAll('.btn-copy-css');
+    copyCssBtns.forEach(btn => {
+        btn.removeEventListener('click', handleCopyCssClick);
+        btn.addEventListener('click', handleCopyCssClick);
+    });
+
+    const copyTwBtns = document.querySelectorAll('.btn-copy-tailwind');
+    copyTwBtns.forEach(btn => {
+        btn.removeEventListener('click', handleCopyTwClick);
+        btn.addEventListener('click', handleCopyTwClick);
+    });
 }
 
 function copyHexColor(e) {
@@ -237,9 +249,17 @@ function buildPaletteOutput(palette) {
                 ${cardsHTML}
             </div>
             ${guidelines}
-            <button class="btn-preview-palette" data-colors='${JSON.stringify(colors)}'>
-                <i class="fa-solid fa-desktop"></i> Lihat Preview Web (Landing Page)
-            </button>
+            <div class="palette-actions">
+                <button class="btn-action btn-preview-palette" data-colors='${JSON.stringify(colors)}'>
+                    <i class="fa-solid fa-desktop"></i> Preview Web (Landing Page)
+                </button>
+                <button class="btn-action btn-copy-css" data-palette='${JSON.stringify({name, colors})}'>
+                    <i class="fa-brands fa-css3-alt"></i> Salin CSS
+                </button>
+                <button class="btn-action btn-copy-tailwind" data-palette='${JSON.stringify({name, colors})}'>
+                    <i class="fa-solid fa-code"></i> Salin Tailwind
+                </button>
+            </div>
         </div>
     `;
 }
@@ -304,6 +324,40 @@ function shadeColor(color, percent) {
     var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
 
     return "#"+RR+GG+BB;
+}
+
+function handleCopyCssClick(e) {
+    const paletteStr = e.currentTarget.getAttribute('data-palette');
+    const { name, colors } = JSON.parse(paletteStr);
+    
+    let cssText = `/* Palette: ${name} */\n:root {\n`;
+    const roles = ['bg', 'primary', 'secondary', 'accent'];
+    colors.forEach((col, idx) => {
+        cssText += `  --color-${roles[idx] || 'extra-' + idx}: ${col};\n`;
+    });
+    cssText += `}\n`;
+    
+    navigator.clipboard.writeText(cssText).then(() => {
+        showToast('Berhasil menyalin kode CSS!');
+    });
+}
+
+function handleCopyTwClick(e) {
+    const paletteStr = e.currentTarget.getAttribute('data-palette');
+    const { name, colors } = JSON.parse(paletteStr);
+    
+    const themeName = name.toLowerCase().replace(/\s+/g, '-');
+    const roles = ['bg', 'primary', 'secondary', 'accent'];
+    
+    let twText = `// Tailwind config for ${name}\nconst colors = {\n  '${themeName}': {`;
+    colors.forEach((col, idx) => {
+        twText += `\n    ${roles[idx] || 'extra' + idx}: '${col}',`;
+    });
+    twText += `\n  }\n};\n`;
+    
+    navigator.clipboard.writeText(twText).then(() => {
+        showToast('Berhasil menyalin kode Tailwind!');
+    });
 }
 
 function handlePreviewClick(e) {

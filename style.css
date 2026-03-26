@@ -849,30 +849,63 @@ body {
     line-height: 1.5;
 }
 
-.btn-preview-palette {
-    display: block;
-    width: 100%;
-    padding: 0.9rem;
+.palette-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
     margin-top: 1.5rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-    color: white;
+}
+
+.btn-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.8rem;
     border: none;
     border-radius: 12px;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    text-align: center;
     box-shadow: var(--shadow-sm);
 }
 
-.btn-preview-palette:hover {
+.btn-action i {
+    margin-right: 8px;
+}
+
+.btn-action:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
-.btn-preview-palette i {
-    margin-right: 8px;
+.btn-preview-palette {
+    grid-column: span 2;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    font-size: 1.05rem;
+}
+
+.btn-copy-css {
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-copy-css:hover {
+    border-color: #2965f1;
+    color: #2965f1;
+}
+
+.btn-copy-tailwind {
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-copy-tailwind:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
 }
 
 @media (max-width: 850px) {
