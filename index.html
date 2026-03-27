@@ -25,9 +25,17 @@
                     <p>AI Design Assistant</p>
                 </div>
             </div>
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
-                <i class="fa-solid fa-moon"></i>
-            </button>
+            <div class="header-actions">
+                <button class="icon-btn" id="favorites-btn" aria-label="Favorites" title="Palet Favorit">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <button class="icon-btn" id="clear-chat-btn" aria-label="Clear Chat" title="Hapus Obrolan">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <button class="theme-toggle icon-btn" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
         </header>
 
         <!-- Chat Area -->
@@ -107,6 +115,23 @@
                         <p>Dapatkan bantuan cerdas dari AI untuk menginspirasi karya Anda.</p>
                     </div>
                 </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites Modal -->
+    <div id="favorites-modal" class="preview-modal">
+        <div class="preview-modal-content favorites-content">
+            <div class="favorites-header">
+                <h2><i class="fa-solid fa-heart" style="color: #ef4444;"></i> Palet Favorit Saya</h2>
+                <button class="close-preview" id="close-favorites-btn" aria-label="Close Favorites"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="favorites-body" id="favorites-container">
+                <!-- Akan diisi dengan JavaScript -->
+                <div class="empty-favorites">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <p>Belum ada palet favorit yang disimpan.</p>
+                </div>
             </div>
         </div>
     </div>

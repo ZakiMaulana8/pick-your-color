@@ -161,11 +161,18 @@ body {
     font-weight: 400;
 }
 
-.theme-toggle {
+/* Header Actions */
+.header-actions {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.icon-btn {
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: var(--transition);
     width: 44px;
@@ -175,6 +182,17 @@ body {
     align-items: center;
     justify-content: center;
     background-color: var(--card-bg);
+}
+
+.icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.theme-toggle {
+    /* Same styles applied via icon-btn */
 }
 
 .theme-toggle:hover {
@@ -614,6 +632,61 @@ body {
     border-radius: 10px;
 }
 
+/* Favorites Modal Specifics */
+.favorites-content {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+}
+
+.favorites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+}
+
+.favorites-header h2 {
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0;
+}
+
+.favorites-header .close-preview {
+    position: static;
+    background: var(--border-color);
+    color: var(--text-main);
+}
+
+.favorites-body {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background-color: var(--bg-base);
+}
+
+.empty-favorites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 300px;
+    color: var(--text-muted);
+    gap: 1rem;
+    opacity: 0.7;
+}
+
+.empty-favorites i {
+    font-size: 3.5rem;
+}
+
 /* Landing Page Styles inside Preview */
 .preview-header {
     display: flex;
@@ -906,6 +979,23 @@ body {
 .btn-copy-tailwind:hover {
     border-color: #38bdf8;
     color: #38bdf8;
+}
+
+.btn-save-favorite {
+    grid-column: span 2;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-save-favorite:hover, .btn-save-favorite.saved {
+    border-color: #ef4444;
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.btn-save-favorite.saved i {
+    font-weight: 900;
 }
 
 @media (max-width: 850px) {
