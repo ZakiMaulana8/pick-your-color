@@ -65,6 +65,26 @@ const palettesDB = {
     pastel: [
         { colors: ['#fdf4ff', '#fce7f3', '#fbcfe8', '#f472b6'], ratios: [40, 30, 20, 10], name: 'Cotton Candy' },
         { colors: ['#f0f9ff', '#e0f2fe', '#bae6fd', '#38bdf8'], ratios: [50, 25, 15, 10], name: 'Sky Cloud' }
+    ],
+    vintage: [
+        { colors: ['#fef3c7', '#fde68a', '#b45309', '#78350f'], ratios: [60, 20, 15, 5], name: 'Retro Sepia' },
+        { colors: ['#fae8ff', '#f0abfc', '#a21caf', '#4a044e'], ratios: [50, 30, 15, 5], name: '80s Synthwave' },
+        { colors: ['#f1f5f9', '#94a3b8', '#334155', '#0f172a'], ratios: [55, 30, 10, 5], name: 'Classic Grayscale' }
+    ],
+    luxury: [
+        { colors: ['#020617', '#1e293b', '#eab308', '#fef08a'], ratios: [60, 25, 10, 5], name: 'Royal Gold' },
+        { colors: ['#2e1065', '#4c1d95', '#fbbf24', '#fef3c7'], ratios: [55, 30, 10, 5], name: 'Purple Majesty' },
+        { colors: ['#052e16', '#14532d', '#10b981', '#a7f3d0'], ratios: [60, 25, 10, 5], name: 'Emerald Wealth' }
+    ],
+    playful: [
+        { colors: ['#fef08a', '#facc15', '#ef4444', '#3b82f6'], ratios: [40, 30, 15, 15], name: 'Primary Kids' },
+        { colors: ['#c084fc', '#f472b6', '#fcd34d', '#4ade80'], ratios: [25, 25, 25, 25], name: 'Candy Pop' },
+        { colors: ['#fed7aa', '#fb923c', '#ea580c', '#9a3412'], ratios: [40, 30, 20, 10], name: 'Fun Orange' }
+    ],
+    dark: [
+        { colors: ['#09090b', '#18181b', '#27272a', '#a1a1aa'], ratios: [65, 20, 10, 5], name: 'Midnight Charcoal' },
+        { colors: ['#0f172a', '#1e1b4b', '#312e81', '#4f46e5'], ratios: [60, 25, 10, 5], name: 'Deep Space' },
+        { colors: ['#2a0a18', '#4c0519', '#881337', '#e11d48'], ratios: [55, 30, 10, 5], name: 'Vampire Red' }
     ]
 };
 
@@ -73,16 +93,23 @@ function getRecommendations(text) {
     const input = text.toLowerCase();
     let pool = [];
 
-    if (input.includes('minimal')) pool = pool.concat(palettesDB.minimalist);
-    if (input.includes('alam') || input.includes('hijau') || input.includes('nature') || input.includes('lingkungan')) pool = pool.concat(palettesDB.nature);
-    if (input.includes('tech') || input.includes('teknologi') || input.includes('robot') || input.includes('fintech') || input.includes('aplikasi') || input.includes('cyber')) pool = pool.concat(palettesDB.tech);
-    if (input.includes('hangat') || input.includes('cafe') || input.includes('kopi') || input.includes('sunset') || input.includes('orange')) pool = pool.concat(palettesDB.warm);
-    if (input.includes('pastel') || input.includes('lucu') || input.includes('imut') || input.includes('soft')) pool = pool.concat(palettesDB.pastel);
+    if (input.includes('minimal') || input.includes('simpel') || input.includes('sederhana') || input.includes('bersih') || input.includes('clean')) pool = pool.concat(palettesDB.minimalist);
+    if (input.includes('alam') || input.includes('hijau') || input.includes('nature') || input.includes('lingkungan') || input.includes('daun') || input.includes('hutan')) pool = pool.concat(palettesDB.nature);
+    if (input.includes('tech') || input.includes('teknologi') || input.includes('robot') || input.includes('fintech') || input.includes('aplikasi') || input.includes('cyber') || input.includes('modern')) pool = pool.concat(palettesDB.tech);
+    if (input.includes('hangat') || input.includes('cafe') || input.includes('kopi') || input.includes('sunset') || input.includes('orange') || input.includes('musim gugur') || input.includes('autumn')) pool = pool.concat(palettesDB.warm);
+    if (input.includes('pastel') || input.includes('lucu') || input.includes('imut') || input.includes('soft') || input.includes('lembut')) pool = pool.concat(palettesDB.pastel);
     if (input.includes('2') || input.includes('dua') || input.includes('duotone')) pool = pool.concat(palettesDB.duotone);
+    
+    // New constraints
+    if (input.includes('vintage') || input.includes('retro') || input.includes('klasik') || input.includes('jadul') || input.includes('tua') || input.includes('80s') || input.includes('90s')) pool = pool.concat(palettesDB.vintage);
+    if (input.includes('mewah') || input.includes('luxury') || input.includes('elegan') || input.includes('premium') || input.includes('gold') || input.includes('emas') || input.includes('eksklusif')) pool = pool.concat(palettesDB.luxury);
+    if (input.includes('ceria') || input.includes('anak') || input.includes('mainan') || input.includes('playful') || input.includes('fun') || input.includes('cerah') || input.includes('tk')) pool = pool.concat(palettesDB.playful);
+    if (input.includes('dark') || input.includes('gelap') || input.includes('misterius') || input.includes('malam') || input.includes('hitam') || input.includes('horor') || input.includes('gothic')) pool = pool.concat(palettesDB.dark);
 
-    // If no context matched, combine some common good ones
+    // If no context matched, randomly pick one category to inspire them, rather than all
     if (pool.length === 0) {
-        pool = [...palettesDB.tech, ...palettesDB.minimalist, ...palettesDB.warm, ...palettesDB.nature, ...palettesDB.pastel, ...palettesDB.duotone];
+        const allCategories = Object.values(palettesDB);
+        pool = allCategories[Math.floor(Math.random() * allCategories.length)];
     }
 
     // Remove duplicates based on name
@@ -264,6 +291,39 @@ function buildPaletteOutput(palette) {
     `;
 }
 
+// Conversational logic helpers
+const greetings = ['halo', 'hai', 'hi', 'hello', 'pagi', 'siang', 'sore', 'malam', 'helo'];
+const thanks = ['terima kasih', 'makasih', 'thank you', 'thanks', 'tq', 'thx'];
+const helps = ['bantuan', 'help', 'tolong', 'bingung', 'panduan', 'cara', 'tips'];
+
+function getConversationalResponse(text) {
+    const input = text.toLowerCase();
+    
+    // Check for exact greetings
+    if (greetings.includes(input) || greetings.some(g => input === g || input.startsWith(g + ' '))) {
+        return `<p>Halo! Senang bertemu dengan Anda. Ada ide desain atau tema warna apa yang ingin kita eksplorasi hari ini?</p>`;
+    }
+    
+    // Check for thanks
+    if (thanks.some(t => input.includes(t))) {
+        return `<p>Sama-sama! Senang bisa membantu. Beri tahu saya jika Anda butuh rekomendasi palet warna lainnya ya!</p>`;
+    }
+    
+    // Check for help
+    if (helps.some(h => input.includes(h))) {
+        return `<p>Tentu, saya siap membantu! Anda cukup mengetikkan tema desain, suasana, atau gaya yang Anda inginkan. Misalnya:</p>
+                <ul>
+                    <li>"Saya butuh warna untuk website aplikasi fintech yang mewah"</li>
+                    <li>"Nuansa vintage dan retro yang klasik"</li>
+                    <li>"Suasana cafe yang hangat dan santai"</li>
+                    <li>"Desain gelap dan elegan"</li>
+                </ul>
+                <p>Cobalah ketik salah satu deskripsi di atas atau imajinasikan milik Anda sendiri!</p>`;
+    }
+    
+    return null; // Return null if it's likely a color request
+}
+
 // Event Listeners
 chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -280,6 +340,16 @@ chatForm.addEventListener('submit', (e) => {
     // AI Logic Simulation
     setTimeout(() => {
         removeTyping();
+        
+        // Check for casual conversation first
+        const convoResponse = getConversationalResponse(text);
+        
+        if (convoResponse) {
+            appendMessage('bot', convoResponse, true);
+            return;
+        }
+
+        // Feature: Generate Palettes
         const recommendations = getRecommendations(text);
         
         let palettesHtml = '<div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">';
@@ -288,7 +358,16 @@ chatForm.addEventListener('submit', (e) => {
         });
         palettesHtml += '</div>';
         
-        const responseHtml = `<p>Tentu, ini 3 saran rekomendasi palet warna untuk konsep "${text}":</p>` + 
+        // Vary the bot's introductory response based on keywords
+        const introResponses = [
+            `Tentu, berikut adalah beberapa rekomendasi palet warna yang cocok dengan tema "${text}":`,
+            `Sangat menarik! Ini dia kombinasi warna yang pas untuk konsep "${text}":`,
+            `Saya punya beberapa ide brilian untuk "${text}". Coba lihat palet berikut ini:`,
+            `Berdasarkan deskripsi Anda tentang "${text}", ini warna-warna yang bisa membangkitkan suasana tersebut:`
+        ];
+        const randomIntro = introResponses[Math.floor(Math.random() * introResponses.length)];
+        
+        const responseHtml = `<p>${randomIntro}</p>` + 
                              palettesHtml + 
                              `<p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);"><i class="fa-regular fa-lightbulb"></i> Tips: Anda dapat mengklik warna manapun untuk menyalin kode Hex-nya secara otomatis.</p>`;
         

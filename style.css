@@ -289,6 +289,15 @@ body {
     margin-bottom: 0;
 }
 
+.message-content ul, .message-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.message-content li {
+    margin-bottom: 0.4rem;
+}
+
 .bot-message .message-content {
     border-top-left-radius: 4px;
 }
