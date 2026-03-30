@@ -19,6 +19,13 @@ themeToggle.addEventListener('click', () => {
     applyTheme();
 });
 
+function sendQuickPrompt(promptText) {
+    userInput.value = promptText;
+    // Dispatch submit event to execute the search logic
+    chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+}
+
+
 // Toast for copy feedback
 const toast = document.createElement('div');
 toast.className = 'copy-toast';
@@ -38,13 +45,15 @@ const palettesDB = {
     duotone: [
         { colors: ['#0f172a', '#3fbDF3'], ratios: [70, 30], name: 'Neon Cyber Duotone' },
         { colors: ['#fdf4ff', '#d946ef'], ratios: [80, 20], name: 'Minimal Pink' },
-        { colors: ['#171717', '#eab308'], ratios: [85, 15], name: 'Dark Gold Accent' }
+        { colors: ['#171717', '#eab308'], ratios: [85, 15], name: 'Dark Gold Accent' },
+        { colors: ['#042f2e', '#2dd4bf'], ratios: [75, 25], name: 'Teal Shadow' }
     ],
     // 3 Colors
     minimalist: [
         { colors: ['#ffffff', '#f1f5f9', '#0f172a'], ratios: [60, 30, 10], name: 'Clean White Minimal' },
         { colors: ['#fafafa', '#e4e4e7', '#f43f5e'], ratios: [65, 25, 10], name: 'Red Accent Modern' },
-        { colors: ['#1e293b', '#334155', '#38bdf8'], ratios: [60, 30, 10], name: 'Dark UI Soft Blue' }
+        { colors: ['#1e293b', '#334155', '#38bdf8'], ratios: [60, 30, 10], name: 'Dark UI Soft Blue' },
+        { colors: ['#f8fafc', '#cbd5e1', '#6366f1'], ratios: [65, 25, 10], name: 'Indigo Frost' }
     ],
     // 4 Colors
     nature: [
@@ -55,12 +64,14 @@ const palettesDB = {
     warm: [
         { colors: ['#fff7ed', '#ffedd5', '#f97316', '#9a3412'], ratios: [55, 30, 10, 5], name: 'Sunset Coffee' },
         { colors: ['#fef2f2', '#fecaca', '#ef4444', '#7f1d1d'], ratios: [60, 20, 15, 5], name: 'Rose Warmth' },
-        { colors: ['#fffbeb', '#fef08a', '#eab308', '#854d0e'], ratios: [60, 25, 10, 5], name: 'Golden Hour' }
+        { colors: ['#fffbeb', '#fef08a', '#eab308', '#854d0e'], ratios: [60, 25, 10, 5], name: 'Golden Hour' },
+        { colors: ['#fdfcfa', '#f5ebe0', '#d4a373', '#a98467'], ratios: [65, 20, 10, 5], name: 'Classic Cafe' }
     ],
     tech: [
         { colors: ['#0b0f19', '#1e293b', '#3b82f6', '#8b5cf6'], ratios: [60, 25, 10, 5], name: 'SaaS Modern Tech' },
         { colors: ['#ffffff', '#f3f4f6', '#2563eb', '#1e40af'], ratios: [60, 20, 15, 5], name: 'Corporate Trust' },
-        { colors: ['#000000', '#18181b', '#22c55e', '#ec4899'], ratios: [50, 30, 10, 10], name: 'Hacker Punk' }
+        { colors: ['#000000', '#18181b', '#22c55e', '#ec4899'], ratios: [50, 30, 10, 10], name: 'Hacker Punk' },
+        { colors: ['#020617', '#0f172a', '#334155', '#60a5fa'], ratios: [60, 20, 15, 5], name: 'Cyber Blue' }
     ],
     pastel: [
         { colors: ['#fdf4ff', '#fce7f3', '#fbcfe8', '#f472b6'], ratios: [40, 30, 20, 10], name: 'Cotton Candy' },
@@ -87,6 +98,7 @@ const palettesDB = {
         { colors: ['#2a0a18', '#4c0519', '#881337', '#e11d48'], ratios: [55, 30, 10, 5], name: 'Vampire Red' }
     ]
 };
+
 
 // Logic to find matches
 function getRecommendations(text) {

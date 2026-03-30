@@ -191,14 +191,23 @@ body {
     border-color: var(--primary-color);
 }
 
-.theme-toggle {
-    /* Same styles applied via icon-btn */
-}
-
 .theme-toggle:hover {
     transform: rotate(15deg) scale(1.1);
     box-shadow: var(--shadow-sm);
+    color: var(--primary-color);
 }
+
+.prompt-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md), 0 0 15px rgba(99, 102, 241, 0.1);
+}
+
+.prompt-btn i.fa-mug-hot { color: #f97316; }
+.prompt-btn i.fa-laptop-code { color: #6366f1; }
+.prompt-btn i.fa-child-reaching { color: #ef4444; }
+.prompt-btn i.fa-record-vinyl { color: #eab308; }
+
 
 /* Chat Container */
 .chat-container {
@@ -308,6 +317,48 @@ body {
     border-top-right-radius: 4px;
     border: none;
     box-shadow: var(--shadow-glow);
+}
+
+/* Quick Prompts Style */
+.quick-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.25rem;
+}
+
+.prompt-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.6rem 1.1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+}
+
+.prompt-btn i {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+.prompt-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--input-bg);
+    box-shadow: var(--shadow-md), 0 0 15px rgba(99, 102, 241, 0.1);
+}
+
+.prompt-btn:active {
+    transform: translateY(-1px);
 }
 
 /* Typing Indicator */
