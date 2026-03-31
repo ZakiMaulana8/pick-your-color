@@ -364,7 +364,7 @@ chatForm.addEventListener('submit', (e) => {
         // Feature: Generate Palettes
         const recommendations = getRecommendations(text);
         
-        let palettesHtml = '<div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">';
+        let palettesHtml = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">';
         recommendations.forEach(rec => {
             palettesHtml += buildPaletteOutput(rec);
         });

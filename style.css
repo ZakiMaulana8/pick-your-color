@@ -90,7 +90,7 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 850px;
+    max-width: 1300px;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -237,7 +237,7 @@ body {
 .message {
     display: flex;
     gap: 1.2rem;
-    max-width: 85%;
+    max-width: 95%;
     animation: messageSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     opacity: 0;
     transform: translateY(20px) scale(0.95);
@@ -448,7 +448,6 @@ body {
 
 /* Palette Output Styles */
 .palette-display {
-    margin-top: 1.5rem;
     background-color: var(--bg-base);
     padding: 1.2rem;
     border-radius: 16px;
