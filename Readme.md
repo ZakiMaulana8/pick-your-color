@@ -1,1 +1,1 @@
-choose the right color for your design
+choose the right color for your design!
